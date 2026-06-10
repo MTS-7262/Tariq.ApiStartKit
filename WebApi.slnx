@@ -5,5 +5,4 @@
     <Project Path="Domain/Domain.csproj" Id="21cc58c6-cddd-4e41-af9d-00ec33da3e33" />
     <Project Path="Infrastructure/Infrastructure.csproj" Id="3dd02291-abcc-46cb-9383-ffdeea415b12" />
   </Folder>
-  <Folder Name="/test/" />
 </Solution>
