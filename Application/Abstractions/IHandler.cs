@@ -1,7 +1,6 @@
-namespace Application.Abstractions
+namespace Application.Abstractions;
+
+public interface IHandler<in TRequest, TResponse>
 {
-    public interface IHandler<in TRequest, TResponse>
-    {
-        Task<TResponse> HandleAsync(TRequest command, CancellationToken cancellationToken);
-    }
+    Task<TResponse> HandleAsync(TRequest command, CancellationToken cancellationToken);
 }

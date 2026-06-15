@@ -1,7 +1,6 @@
-﻿namespace Application
-{
-    public class ApplicationDependency
-    {
+﻿namespace Application;
 
-    }
+public class ApplicationDependency
+{
+
 }
