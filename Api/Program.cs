@@ -34,7 +34,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHealthChecks();
-
 app.MapApiEndpoints();
 
 app.Run();

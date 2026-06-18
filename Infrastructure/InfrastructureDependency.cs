@@ -1,4 +1,5 @@
 ﻿using Application.Abstractions.Data;
+using Infrastructure.Data;
 using Infrastructure.Database;
 using Infrastructure.Interceptors;
 using Infrastructure.Repository;
@@ -21,6 +22,9 @@ public static class InfrastructureDependency
             options.AddInterceptors(sp.GetRequiredService<AuditInterceptor>());
             options.UseNpgsql(configuration.GetConnectionString("Default"));
         });
+
+        services.AddIdentityApiEndpoints<ApplicationUser>()
+                .AddEntityFrameworkStores<ApplicationDbContext>();
 
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
         services.AddScoped<IUnitOfWork, UnitOfWork>();
