@@ -15,7 +15,7 @@ public static class HealthChecksExtensions
 
     public static IEndpointRouteBuilder UseHealthChecks(this IEndpointRouteBuilder app)
     {
-        app.MapHealthChecks("health", new HealthCheckOptions
+        app.MapHealthChecks("/health", new HealthCheckOptions
         {
             ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
         });

@@ -18,7 +18,8 @@ builder.Services.AddExceptionHandler<CustomExceptionHandler>()
 
 var app = builder.Build();
 
-app.MapApiEndpoints();
+app.UseHttpsRedirection();
+app.UseExceptionHandler();
 
 if (app.Environment.IsDevelopment())
 {
@@ -32,10 +33,8 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-app.UseHttpsRedirection();
+app.UseHealthChecks();
 
-app.UseHttpsRedirection();
-app.UseExceptionHandler();
-
+app.MapApiEndpoints();
 
 app.Run();
