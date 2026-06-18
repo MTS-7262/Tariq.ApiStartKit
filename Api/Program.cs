@@ -23,17 +23,16 @@ app.MapApiEndpoints();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.MapScalarApiReference(options =>
+    {
+        options.WithTheme(ScalarTheme.DeepSpace);
+        options.WithDefaultHttpClient(
+            ScalarTarget.CSharp,
+            ScalarClient.HttpClient);
+    });
 }
 
 app.UseHttpsRedirection();
-
-app.MapScalarApiReference(options =>
-{
-    options.WithTheme(ScalarTheme.DeepSpace);
-    options.WithDefaultHttpClient(
-        ScalarTarget.CSharp,
-        ScalarClient.HttpClient);
-});
 
 app.UseHttpsRedirection();
 app.UseExceptionHandler();

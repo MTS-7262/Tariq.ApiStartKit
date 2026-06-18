@@ -1,9 +1,11 @@
 ﻿using Application.Abstractions;
+using Application.Extensions;
+using Application.Features;
 using Application.Pipelines;
+using Domain.Abstractions;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
-using Application.Extensions;
-using FluentValidation;
 
 namespace Application;
 
@@ -42,7 +44,6 @@ public static class ApplicationDependency
                 services.AddScoped(handlerInterface, implementation);
             }
         }
-
         services.Decorate(typeof(IHandler<,>), typeof(ValidationDecorator<,>));
         services.Decorate(typeof(IHandler<,>), typeof(LoggingDecorator<,>));
 
