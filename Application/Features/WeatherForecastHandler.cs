@@ -4,7 +4,7 @@ using Domain.Abstractions;
 namespace Application.Features;
 
 public sealed record GetWeatherForecastRequest;
-public sealed record GetWeatherForecastResponse(IEnumerable<WeatherForecastRecord> Books);
+public sealed record GetWeatherForecastResponse(IEnumerable<WeatherForecastRecord> weather);
 
 public record WeatherForecastRecord(DateOnly Date, int TemperatureC, string? Summary)
 {

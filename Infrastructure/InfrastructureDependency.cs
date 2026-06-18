@@ -19,7 +19,7 @@ public static class InfrastructureDependency
         services.AddDbContext<ApplicationDbContext>((sp, options) =>
         {
             options.AddInterceptors(sp.GetRequiredService<AuditInterceptor>());
-            options.UseNpgsql(configuration.GetConnectionString("connection"));
+            options.UseNpgsql(configuration.GetConnectionString("Default"));
         });
 
         services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
