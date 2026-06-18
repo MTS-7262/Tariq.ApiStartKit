@@ -1,8 +1,8 @@
-﻿
-using Application.Abstractions.Data.DataSeeder;
+﻿using Application.Services;
+using Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
 
-namespace Infrastructure.Data.DataSeeder;
+namespace Infrastructure.Services;
 
 public class IdentityDataSeeder(
     UserManager<ApplicationUser> userManager,

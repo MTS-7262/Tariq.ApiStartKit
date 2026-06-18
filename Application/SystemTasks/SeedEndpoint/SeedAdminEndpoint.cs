@@ -1,5 +1,5 @@
 ﻿using Application.Abstractions;
-using Application.Abstractions.Data.DataSeeder;
+using Application.Services;
 
 namespace Application.SystemTasks.SeedEndpoint;
 
