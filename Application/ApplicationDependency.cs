@@ -1,11 +1,11 @@
 ﻿using Application.Abstractions;
 using Application.Extensions;
-using Application.Features;
 using Application.Pipelines;
-using Domain.Abstractions;
+using AutoMapper;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
+using Microsoft.Extensions.Logging;
 
 namespace Application;
 
@@ -15,9 +15,10 @@ public static class ApplicationDependency
     {
         var assembly = typeof(ApplicationDependency).Assembly;
 
-        services.AddValidatorsFromAssembly(assembly);
-        services.AddHandlersFromAssembly(assembly);
-        services.RegisterApiEndpointsFromAssembly(assembly);
+        _ = services.AddValidatorsFromAssembly(assembly)
+                  .AddHandlersFromAssembly(assembly)
+                  .RegisterApiEndpointsFromAssembly(assembly)
+                  .AddAutoMapperProfilesFromAssembly(assembly);
 
         return services;
     }
@@ -46,6 +47,30 @@ public static class ApplicationDependency
         }
         services.Decorate(typeof(IHandler<,>), typeof(ValidationDecorator<,>));
         services.Decorate(typeof(IHandler<,>), typeof(LoggingDecorator<,>));
+
+        return services;
+    }
+
+    private static IServiceCollection AddAutoMapperProfilesFromAssembly(
+        this IServiceCollection services,
+        Assembly assembly)
+    {
+        var profileTypes = assembly.GetTypes()
+            .Where(t => typeof(Profile).IsAssignableFrom(t) && t is { IsAbstract: false, IsClass: true });
+
+        var expr = new MapperConfigurationExpression();
+
+        foreach (var type in profileTypes)
+        {
+            var profileInstance = (Profile)Activator.CreateInstance(type)!;
+            expr.AddProfile(profileInstance);
+        }
+
+        using var loggerFactory = new LoggerFactory();
+        var config = new MapperConfiguration(expr, loggerFactory);
+        var mapper = config.CreateMapper();
+
+        services.AddSingleton(mapper);
 
         return services;
     }

@@ -1,4 +1,5 @@
 ﻿using Application.Abstractions;
+using AutoMapper;
 using Domain.Abstractions;
 
 namespace Application.Features;
@@ -10,7 +11,7 @@ public record WeatherForecastRecord(DateOnly Date, int TemperatureC, string? Sum
 {
     public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
 }
-public class WeatherForecastHandler : IHandler<GetWeatherForecastRequest, Result<GetWeatherForecastResponse>>
+public class WeatherForecastHandler(IMapper mapper) : IHandler<GetWeatherForecastRequest, Result<GetWeatherForecastResponse>>
 {
     public async Task<Result<GetWeatherForecastResponse>> HandleAsync(GetWeatherForecastRequest command, CancellationToken cancellationToken)
     {
@@ -29,6 +30,8 @@ public class WeatherForecastHandler : IHandler<GetWeatherForecastRequest, Result
             .ToList();
         await Task.Delay(100, cancellationToken);
 
-        return Result.Success(new GetWeatherForecastResponse(forecast));
+        var response = mapper.Map<GetWeatherForecastResponse>(forecast);
+
+        return Result.Success(response);
     }
 }

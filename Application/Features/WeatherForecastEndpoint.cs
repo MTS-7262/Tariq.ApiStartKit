@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Application.Features;
 
-internal sealed class WeatherForecast:IApiEndpoint
+internal sealed class WeatherForecastEndpoint:IApiEndpoint
 {
     public void MapEndpoint(WebApplication app)
     {
