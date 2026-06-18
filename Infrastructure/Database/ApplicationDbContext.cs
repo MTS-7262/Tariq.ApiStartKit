@@ -1,7 +1,6 @@
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Emit;
 using Infrastructure.Data.Extensions;
 
 namespace Infrastructure.Database;
