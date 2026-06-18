@@ -1,0 +1,34 @@
+﻿using Application.Abstractions;
+using Domain.Abstractions;
+
+namespace Application.Features;
+
+public sealed record GetWeatherForecastRequest;
+public sealed record GetWeatherForecastResponse(IEnumerable<WeatherForecastRecord> Books);
+
+public record WeatherForecastRecord(DateOnly Date, int TemperatureC, string? Summary)
+{
+    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
+}
+public class WeatherForecastHandler : IHandler<GetWeatherForecastRequest, Result<GetWeatherForecastResponse>>
+{
+    public async Task<Result<GetWeatherForecastResponse>> HandleAsync(GetWeatherForecastRequest command, CancellationToken cancellationToken)
+    {
+        var summaries = new[]
+        {
+            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
+        };
+
+        var forecast = Enumerable.Range(1, 5).Select(index =>
+                new WeatherForecastRecord
+                (
+                    DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+                    Random.Shared.Next(-20, 55),
+                    summaries[Random.Shared.Next(summaries.Length)]
+                ))
+            .ToList();
+        await Task.Delay(100, cancellationToken);
+
+        return Result.Success(new GetWeatherForecastResponse(forecast));
+    }
+}
