@@ -1,6 +1,8 @@
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection.Emit;
+using Infrastructure.Data.Extensions;
 
 namespace Infrastructure.Database;
 
@@ -11,5 +13,6 @@ public class ApplicationDbContext(DbContextOptions options)
     {
         base.OnModelCreating(builder);
         builder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
+        builder.ApplyUtcDateTimeConverter();
     }
 }
