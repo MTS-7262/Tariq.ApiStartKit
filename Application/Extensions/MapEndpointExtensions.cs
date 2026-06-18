@@ -20,15 +20,15 @@ public static class MapEndpointExtensions
         return services;
     }
 
-    //public static WebApplication MapApiEndpoints(this WebApplication app)
-    //{
-    //    var endpoints = app.Services.GetRequiredService<IEnumerable<IApiEndpoint>>();
+    public static WebApplication MapApiEndpoints(this WebApplication app)
+    {
+        var endpoints = app.Services.GetRequiredService<IEnumerable<IApiEndpoint>>();
 
-    //    foreach (var endpoint in endpoints)
-    //    {
-    //        endpoint.MapEndpoint(app);
-    //    }
+        foreach (var endpoint in endpoints)
+        {
+            endpoint.MapEndpoint(app);
+        }
 
-    //    return app;
-    //}
+        return app;
+    }
 }
