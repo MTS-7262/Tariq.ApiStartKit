@@ -10,4 +10,8 @@ public class RoleManager(RoleManager<IdentityRole> roleManager) : IRoleManager
         var roleExit = await roleManager.RoleExistsAsync(roleName);
         return roleExit;
     }
+
+    public async Task CreateRoleAsync(string roleName) =>
+        await roleManager.CreateAsync(new IdentityRole(roleName));
+
 }
