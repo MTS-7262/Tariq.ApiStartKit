@@ -1,4 +1,5 @@
 ﻿using Application.Features.Authentication.Login;
+using Application.Features.Authentication.MfaDisable;
 using Application.Features.Authentication.MfaSetup;
 using Application.Features.Authentication.MfaToggle;
 using Application.Features.Authentication.MfaVerification;
@@ -13,4 +14,5 @@ public interface ISigninManager
     Task<MfaVerificationResponse> TwoFactorSignInAsync(MfaVerificationRequest request);
     Task<MfaSetupResponse> GetAuthenticatorSetupDetailsAsync();
     Task<MfaToggleResponse> ToggleMfaAsync(MfaToggleRequest request);
+    Task<MfaDisableResponse> DisableMfaAsync(MfaDisableRequest request);
 }

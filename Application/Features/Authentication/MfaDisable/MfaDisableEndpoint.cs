@@ -3,14 +3,14 @@ using Application.Constants;
 using Application.Extensions;
 using Domain.Abstractions;
 
-namespace Application.Features.Authentication.MfaToggle;
+namespace Application.Features.Authentication.MfaDisable;
 
-public class MfaToggleEndpoint : IApiEndpoint
+public class MfaDisableEndpoint : IApiEndpoint
 {
     public void MapEndpoint(WebApplication app)
     {
-        app.MapGet("/mfa-toggle", async (IHandler<MfaToggleRequest, Result<MfaToggleResponse>> handler,
-                MfaToggleRequest command,
+        app.MapPost("/manage/mfa/disable", async (IHandler<MfaDisableRequest, Result<MfaDisableResponse>> handler,
+                MfaDisableRequest command,
                 CancellationToken cancellationToken) =>
             {
                 var result = await handler.HandleAsync(command, cancellationToken);
@@ -20,7 +20,7 @@ public class MfaToggleEndpoint : IApiEndpoint
             })
             .WithTags(ApiTags.Authentication)
             .RequireAuthorization()
-            .Produces<MfaToggleResponse>(StatusCodes.Status200OK)
+            .Produces<MfaDisableResponse>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status400BadRequest);
     }
 }

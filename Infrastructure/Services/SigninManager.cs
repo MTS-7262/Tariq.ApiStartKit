@@ -1,4 +1,5 @@
 ﻿using Application.Features.Authentication.Login;
+using Application.Features.Authentication.MfaDisable;
 using Application.Features.Authentication.MfaSetup;
 using Application.Features.Authentication.MfaToggle;
 using Application.Features.Authentication.MfaVerification;
@@ -38,7 +39,7 @@ public class SigninManager(SignInManager<ApplicationUser> signInManager,
             throw new ArgumentException("Invalid credentials.");
 
 
-        var emailToken = await userManager.GenerateTwoFactorTokenAsync(user, TokenOptions.DefaultEmailProvider);
+        //var emailToken = await userManager.GenerateTwoFactorTokenAsync(user, TokenOptions.DefaultEmailProvider);
 
         // TODO: Trigger your custom notification system / Domain Event here!
         // Example: _mediator.Publish(new MfaEmailTokenGeneratedEvent(user.Email, emailToken));
@@ -91,7 +92,7 @@ public class SigninManager(SignInManager<ApplicationUser> signInManager,
 
         var qrCodeUri = $"otpauth://totp/{Uri.EscapeDataString(appName)}:{Uri.EscapeDataString(user.Email!)}?secret={unformattedKey}&issuer={Uri.EscapeDataString(appName)}&digits=6";
 
-        return new MfaSetupResponse(unformattedKey, qrCodeUri);
+        return new MfaSetupResponse(unformattedKey??string.Empty, qrCodeUri);
 
     }
 
@@ -137,5 +138,33 @@ public class SigninManager(SignInManager<ApplicationUser> signInManager,
             default:
                 throw new ArgumentException("Invalid provider type chosen.");
         }
+    }
+
+    public async Task<MfaDisableResponse> DisableMfaAsync(MfaDisableRequest request)
+    {
+        // 1. Resolve current user identity via HttpContext token claims
+        var principal = httpContextAccessor.HttpContext?.User;
+        if (principal == null) throw new ArgumentException("User session not found.");
+
+        var user = await userManager.GetUserAsync(principal);
+        if (user == null) throw new ArgumentException("User account not found.");
+
+        // 2. Security Re-authentication Verification Check
+        var isPasswordValid = await userManager.CheckPasswordAsync(user, request.Password);
+        if (!isPasswordValid)
+        {
+            throw new ArgumentException("Invalid password confirmation. Access Denied.");
+        }
+
+        // 3. Mutate Identity state configuration
+        if (!user.TwoFactorEnabled)
+        {
+            return new MfaDisableResponse(true, "Multi-factor authentication is already disabled.");
+        }
+
+        var result = await userManager.SetTwoFactorEnabledAsync(user, false);
+        return !result.Succeeded ? 
+            throw new ArgumentException("An error occurred while updating security settings properties.") : 
+            new MfaDisableResponse(true, "Multi-factor authentication has been successfully deactivated.");
     }
 }

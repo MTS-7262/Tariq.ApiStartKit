@@ -18,6 +18,7 @@ public class MfaSetupEndpoint : IApiEndpoint
                 onFailure: Results.BadRequest);
         })
         .WithTags(ApiTags.Authentication)
+        .RequireAuthorization()
         .Produces<MfaSetupResponse>(StatusCodes.Status200OK)
         .Produces(StatusCodes.Status400BadRequest);
     }

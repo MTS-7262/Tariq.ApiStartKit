@@ -4,11 +4,11 @@ using Domain.Abstractions;
 
 namespace Application.Features.Authentication.MfaSetup;
 
-public class MfaSetupHandler(ISigninManager signinManager) : IHandler<Result<MfaSetupResponse>>
+public class MfaSetupHandler(ISigninManager signInManager) : IHandler<Result<MfaSetupResponse>>
 {
     public async Task<Result<MfaSetupResponse>> HandleAsync(CancellationToken cancellationToken)
     {
-        var result = await signinManager.GetAuthenticatorSetupDetailsAsync();
+        var result = await signInManager.GetAuthenticatorSetupDetailsAsync();
         return Result.Success(result);
     }
 }
