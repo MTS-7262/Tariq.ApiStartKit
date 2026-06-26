@@ -1,10 +1,12 @@
-﻿using FluentValidation;
+﻿using System.ComponentModel.DataAnnotations;
+using Application.Services;
+using FluentValidation;
 
 namespace Application.Features.Authentication.Registration;
 
 public class RegistrationValidator : AbstractValidator<RegisterUserRequest>
 {
-    public RegistrationValidator()
+    public RegistrationValidator(IUserManager userManager)
     {
         RuleFor(c => c.FirstName)
             .NotEmpty().WithMessage("First Name is Required")
@@ -17,9 +19,16 @@ public class RegistrationValidator : AbstractValidator<RegisterUserRequest>
             .MaximumLength(100).WithMessage("Last Name must not exceed 100 characters");
 
         RuleFor(c => c.Email)
-            .EmailAddress().WithMessage("Invalid Email Address");
+            .NotEmpty().WithMessage("Email Address is Required")
+            .EmailAddress().WithMessage("Invalid Email Address")
+            .MustAsync(async (email, _) =>
+            {
+                var userExist = await userManager.UserEmailExistAsync(email);
+                return !userExist;
+            }).WithMessage("Email address already exit");
 
         RuleFor(c => c.Password)
+            .NotEmpty().WithMessage("Password is Required")
             .MinimumLength(6).WithMessage("Password should have at least 6 characters");
     }
 
