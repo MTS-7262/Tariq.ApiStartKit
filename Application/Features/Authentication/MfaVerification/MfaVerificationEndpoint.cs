@@ -3,9 +3,9 @@ using Application.Constants;
 using Application.Extensions;
 using Domain.Abstractions;
 
-namespace Application.Features.Authentication.Mfa;
+namespace Application.Features.Authentication.MfaVerification;
 
-public class MfaEndpoint : IApiEndpoint
+public class MfaVerificationEndpoint : IApiEndpoint
 {
     public void MapEndpoint(WebApplication app)
     {

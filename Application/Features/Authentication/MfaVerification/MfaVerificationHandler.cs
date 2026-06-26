@@ -2,9 +2,9 @@
 using Application.Services;
 using Domain.Abstractions;
 
-namespace Application.Features.Authentication.Mfa;
+namespace Application.Features.Authentication.MfaVerification;
 
-public class MfaHandler(ISigninManager signInManager) : IHandler<MfaVerificationRequest, Result<MfaVerificationResponse>>
+public class MfaVerificationHandler(ISigninManager signInManager) : IHandler<MfaVerificationRequest, Result<MfaVerificationResponse>>
 {
     public async Task<Result<MfaVerificationResponse>> HandleAsync(MfaVerificationRequest command, CancellationToken cancellationToken)
     {
