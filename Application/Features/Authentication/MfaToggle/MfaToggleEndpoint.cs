@@ -3,15 +3,15 @@ using Application.Constants;
 using Application.Extensions;
 using Domain.Abstractions;
 
-namespace Application.Features.Authentication.MfaVerification;
+namespace Application.Features.Authentication.MfaToggle;
 
-public class MfaVerificationEndpoint : IApiEndpoint
+public class MfaToggleEndpoint : IApiEndpoint
 {
     public void MapEndpoint(WebApplication app)
     {
-        app.MapPost("/mfa-verify", async (IHandler<MfaVerificationRequest, Result<MfaVerificationResponse>> handler,
-                                                 MfaVerificationRequest command,
-                                                 CancellationToken cancellationToken) =>
+        app.MapGet("/mfa-toggle", async (IHandler<MfaToggleRequest, Result<MfaToggleResponse>> handler,
+                MfaToggleRequest command,
+                CancellationToken cancellationToken) =>
             {
                 var result = await handler.HandleAsync(command, cancellationToken);
                 return result.Match(
@@ -19,7 +19,7 @@ public class MfaVerificationEndpoint : IApiEndpoint
                     onFailure: Results.BadRequest);
             })
             .WithTags(ApiTags.Authentication)
-            .Produces<MfaVerificationResponse>(StatusCodes.Status200OK)
+            .Produces<MfaToggleResponse>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status400BadRequest);
     }
 }

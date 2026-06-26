@@ -1,5 +1,6 @@
 ﻿using Application.Features.Authentication.Login;
 using Application.Features.Authentication.MfaSetup;
+using Application.Features.Authentication.MfaToggle;
 using Application.Features.Authentication.MfaVerification;
 using Microsoft.AspNetCore.Identity;
 
@@ -11,5 +12,5 @@ public interface ISigninManager
     Task<LoginServiceResponse> RequiredTwoFactorAsync();
     Task<MfaVerificationResponse> TwoFactorSignInAsync(MfaVerificationRequest request);
     Task<MfaSetupResponse> GetAuthenticatorSetupDetailsAsync();
-    Task<ToggleMfaSetupResponse> ToggleMfaAsync(ToggleMfaSetupRequest request);
+    Task<MfaToggleResponse> ToggleMfaAsync(MfaToggleRequest request);
 }

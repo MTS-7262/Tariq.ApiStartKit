@@ -1,5 +1,6 @@
 ﻿using Application.Features.Authentication.Login;
 using Application.Features.Authentication.MfaSetup;
+using Application.Features.Authentication.MfaToggle;
 using Application.Features.Authentication.MfaVerification;
 using Application.Services;
 using Infrastructure.Data;
@@ -94,8 +95,47 @@ public class SigninManager(SignInManager<ApplicationUser> signInManager,
 
     }
 
-    public Task<ToggleMfaSetupResponse> ToggleMfaAsync(ToggleMfaSetupRequest request)
+    public async Task<MfaToggleResponse> ToggleMfaAsync(MfaToggleRequest request)
     {
-        throw new NotImplementedException();
+        var principal = httpContextAccessor.HttpContext?.User;
+        if (principal == null) throw new ArgumentException("User session not found.");
+
+        var user = await userManager.GetUserAsync(principal);
+        if (user == null) throw new ArgumentException("User not found.");
+
+        // Flow A: Disabling MFA entirely
+        if (!request.Enable)
+        {
+            await userManager.SetTwoFactorEnabledAsync(user, false);
+            return new MfaToggleResponse(true, "Two-factor authentication has been disabled safely.");
+        }
+
+        switch (request.Provider)
+        {
+            // Flow B: Enabling Time-based Authenticator App MFA
+            case "Authenticator" when string.IsNullOrEmpty(request.VerificationCode):
+                throw new ArgumentException("Verification code from your app is required to enable Authenticator MFA.");
+            case "Authenticator":
+            {
+                var isValid = await userManager.VerifyTwoFactorTokenAsync(
+                    user,
+                    userManager.Options.Tokens.AuthenticatorTokenProvider,
+                    request.VerificationCode.Replace(" ", "")
+                );
+
+                if (!isValid) throw new ArgumentException("Invalid verification token. Activation canceled.");
+
+                await userManager.SetTwoFactorEnabledAsync(user, true);
+                return new MfaToggleResponse(true, "Authenticator App MFA enabled successfully.");
+            }
+            // Flow C: Enabling Email MFA
+            case "Email" when !await userManager.IsEmailConfirmedAsync(user):
+                throw new ArgumentException("You must verify your email address before setting up Email MFA.");
+            case "Email":
+                await userManager.SetTwoFactorEnabledAsync(user, true);
+                return new MfaToggleResponse(true, "Email MFA enabled successfully.");
+            default:
+                throw new ArgumentException("Invalid provider type chosen.");
+        }
     }
 }

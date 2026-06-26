@@ -9,7 +9,7 @@ public class MfaSetupEndpoint : IApiEndpoint
 {
     public void MapEndpoint(WebApplication app)
     {
-        app.MapGet("/setup-authenticator", async (IHandler<Result<MfaSetupResponse>> handler,
+        app.MapGet("/mfa-setup", async (IHandler<Result<MfaSetupResponse>> handler,
                                                          CancellationToken cancellationToken) =>
         {
             var result = await handler.HandleAsync(cancellationToken);
