@@ -3,15 +3,15 @@ using Application.Constants;
 using Application.Extensions;
 using Domain.Abstractions;
 
-namespace Application.Features.Authentication.Login;
+namespace Application.Features.Authentication.Mfa;
 
-internal sealed class LoginEndpoint : IApiEndpoint
+public class MfaEndpoint : IApiEndpoint
 {
     public void MapEndpoint(WebApplication app)
     {
-        app.MapPost("/login", async (IHandler<LoginRequest, Result<LoginResponse>> handler, 
-                                            LoginRequest command, 
-                                            CancellationToken cancellationToken) =>
+        app.MapPost("/verify-mfa", async (IHandler<MfaVerificationRequest, Result<MfaVerificationResponse>> handler,
+                                                 MfaVerificationRequest command,
+                                                 CancellationToken cancellationToken) =>
             {
                 var result = await handler.HandleAsync(command, cancellationToken);
                 return result.Match(
@@ -19,7 +19,7 @@ internal sealed class LoginEndpoint : IApiEndpoint
                     onFailure: Results.BadRequest);
             })
             .WithTags(ApiTags.Authentication)
-            .Produces<LoginResponse>(StatusCodes.Status200OK)
+            .Produces<MfaVerificationResponse>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status400BadRequest);
     }
 }

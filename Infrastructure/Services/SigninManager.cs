@@ -1,6 +1,8 @@
 ﻿using Application.Features.Authentication.Login;
+using Application.Features.Authentication.Mfa;
 using Application.Services;
 using Infrastructure.Data;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 
 namespace Infrastructure.Services;
@@ -38,5 +40,27 @@ public class SigninManager(SignInManager<ApplicationUser> signInManager, UserMan
 
         return new LoginServiceResponse(true, "Email", "A security code has been dispatched to your registered email address.");
 
+    }
+
+    public async Task<MfaVerificationResponse> TwoFactorSignInAsync(MfaVerificationRequest request)
+    {
+        var actualProvider = request.Provider == "Authenticator"
+            ? TokenOptions.DefaultAuthenticatorProvider
+            : TokenOptions.DefaultEmailProvider;
+
+        var result = await signInManager.TwoFactorSignInAsync(
+            actualProvider,
+            request.Code.Replace(" ", ""),
+            isPersistent: request.RememberMe,
+            rememberClient: false
+        );
+
+        if (result.Succeeded)
+            return new MfaVerificationResponse("Token", "RefreshToken");
+
+        if (result.IsLockedOut)
+            throw new ArgumentException("Account locked.");
+
+        throw new ArgumentException("Invalid verification code provided.");
     }
 }
