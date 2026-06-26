@@ -38,7 +38,8 @@ public static class ApplicationDependency
                 .GetInterfaces()
                 .Where(i =>
                     i.IsGenericType &&
-                    i.GetGenericTypeDefinition() == typeof(IHandler<,>));
+                    (i.GetGenericTypeDefinition() == typeof(IHandler<,>) ||
+                    i.GetGenericTypeDefinition() == typeof(IHandler<>)));
 
             foreach (var handlerInterface in handlerInterfaces)
             {
@@ -47,6 +48,8 @@ public static class ApplicationDependency
         }
         services.Decorate(typeof(IHandler<,>), typeof(ValidationDecorator<,>));
         services.Decorate(typeof(IHandler<,>), typeof(LoggingDecorator<,>));
+
+        services.Decorate(typeof(IHandler<>), typeof(NoRequestLoggingDecorator<>));
 
         return services;
     }

@@ -9,7 +9,7 @@ public class MfaToggleEndpoint : IApiEndpoint
 {
     public void MapEndpoint(WebApplication app)
     {
-        app.MapGet("/mfa-toggle", async (IHandler<MfaToggleRequest, Result<MfaToggleResponse>> handler,
+        app.MapPost("/mfa-toggle", async (IHandler<MfaToggleRequest, Result<MfaToggleResponse>> handler,
                 MfaToggleRequest command,
                 CancellationToken cancellationToken) =>
             {

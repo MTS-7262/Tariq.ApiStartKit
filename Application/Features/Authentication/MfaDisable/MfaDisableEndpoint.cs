@@ -9,7 +9,7 @@ public class MfaDisableEndpoint : IApiEndpoint
 {
     public void MapEndpoint(WebApplication app)
     {
-        app.MapPost("/manage/mfa/disable", async (IHandler<MfaDisableRequest, Result<MfaDisableResponse>> handler,
+        app.MapPost("/mfa-disable", async (IHandler<MfaDisableRequest, Result<MfaDisableResponse>> handler,
                 MfaDisableRequest command,
                 CancellationToken cancellationToken) =>
             {
