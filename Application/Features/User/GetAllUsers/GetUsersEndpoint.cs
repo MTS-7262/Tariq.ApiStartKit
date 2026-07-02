@@ -19,7 +19,6 @@ public class GetUsersEndpoint : IApiEndpoint
                     onFailure: Results.BadRequest);
             })
             .WithTags(ApiTags.User)
-            .RequireAuthorization()
             .Produces<PaginatedList<UserResponseDto>>(StatusCodes.Status200OK)
             .Produces(StatusCodes.Status400BadRequest);
     }

@@ -1,4 +1,5 @@
 ﻿using Application.Features.Authentication.Registration;
+using Application.Features.User.GetAllUsers;
 using Application.Services;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
@@ -7,6 +8,17 @@ namespace Infrastructure.Services;
 
 public class UserManager(UserManager<ApplicationUser> userManager) : IUserManager
 {
+    public IQueryable<Users> Query()
+    {
+        return userManager.Users.Select(identityUser => new Users
+            {
+                Id = identityUser.Id,
+                Email = identityUser.Email??string.Empty,
+                FirstName = identityUser.FirstName,
+                LastName = identityUser.LastName
+            });
+    }
+
     public async Task<bool> UserEmailExistAsync(string email)
     {
         var user = await userManager.FindByEmailAsync(email);
@@ -35,4 +47,6 @@ public class UserManager(UserManager<ApplicationUser> userManager) : IUserManage
             throw new Exception($"Failed to register user: {errors}");
         }
     }
+
+
 }

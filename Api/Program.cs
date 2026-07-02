@@ -11,12 +11,15 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
-builder.Services.AddHealthChecksConfiguration();
+builder.Services.AddAuthorization();
 
+builder.Services.AddHealthChecksConfiguration();
 builder.Services.AddExceptionHandler<CustomExceptionHandler>()
                 .AddProblemDetails();
 
 var app = builder.Build();
+
+app.UseRouting();
 
 app.UseHttpsRedirection();
 app.UseExceptionHandler();
@@ -32,6 +35,10 @@ if (app.Environment.IsDevelopment())
             ScalarClient.HttpClient);
     });
 }
+
+
+app.UseAuthentication(); 
+app.UseAuthorization();
 
 app.UseHealthChecks();
 app.MapApiEndpoints();
