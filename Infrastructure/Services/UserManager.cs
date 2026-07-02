@@ -1,6 +1,7 @@
 ﻿using Application.Features.Authentication.Registration;
 using Application.Features.User.GetAllUsers;
 using Application.Services;
+using Domain.Entities;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
 
@@ -8,10 +9,22 @@ namespace Infrastructure.Services;
 
 public class UserManager(UserManager<ApplicationUser> userManager) : IUserManager
 {
+    public async Task<Users> GetUserByIdAsync(Guid id)
+    {
+       var user= await userManager.FindByIdAsync(id.ToString())??new ApplicationUser();
+       return new Users()
+       {
+           Id = user.Id,
+           Email = user.Email??string.Empty,
+           FirstName = user.FirstName,
+           LastName = user.LastName
+       };
+    }
+
     public IQueryable<Users> Query()
     {
         return userManager.Users.Select(identityUser => new Users
-            {
+        {
                 Id = identityUser.Id,
                 Email = identityUser.Email??string.Empty,
                 FirstName = identityUser.FirstName,

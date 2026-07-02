@@ -6,7 +6,7 @@ namespace Infrastructure.Services;
 
 public class IdentityDataSeeder(
     UserManager<ApplicationUser> userManager,
-    RoleManager<IdentityRole> roleManager) 
+    RoleManager<IdentityRole<Guid>> roleManager) 
     : IIdentityDataSeeder
 {
     public async Task SeedAdminUserAsync(CancellationToken cancellationToken = default)
@@ -18,7 +18,7 @@ public class IdentityDataSeeder(
         // 1. Ensure the "Admin" role exists
         if (!await roleManager.RoleExistsAsync(adminRoleName))
         {
-            await roleManager.CreateAsync(new IdentityRole(adminRoleName));
+            await roleManager.CreateAsync(new IdentityRole<Guid>(adminRoleName));
         }
 
         // 2. Ensure the Admin user exists

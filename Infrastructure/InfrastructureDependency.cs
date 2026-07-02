@@ -26,7 +26,7 @@ public static class InfrastructureDependency
         });
 
         services.AddIdentityApiEndpoints<ApplicationUser>()
-            .AddRoles<IdentityRole>()
+            .AddRoles<IdentityRole<Guid>>()
             .AddEntityFrameworkStores<ApplicationDbContext>()
             .AddDefaultTokenProviders();
 
